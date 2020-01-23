@@ -109,7 +109,7 @@
 - name: create dynamic redis config file
   template:
     src: redis.conf.j2
-    dest: /etc/redis/{{ redis_port }}.conf
+    dest: /etc/redis/{{ redis_config_file_name }}
     owner: "{{ redis_user }}"
     mode: 0640
   when: not redis_config_file.stat.exists
