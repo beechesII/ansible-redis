@@ -11,22 +11,10 @@
     - redis_inside_container is not defined
 
 - name: compile redis
-  shell: umask 0022 && make -j{{ ansible_processor_cores|default(1) + 1 }}{{ ' 32bit' if redis_make_32bit|bool else '' }}
+  shell: umask 0022 && make -j{{ ansible_processor_cores|default(1) + 1 }}{{ ' 32bit' if redis_make_32bit|bool else '' }} BUILD_TLS=yes MALLOC=LIBC
   args:
     chdir: /usr/local/src/redis-{{ redis_version }}
     creates: /usr/local/src/redis-{{ redis_version }}/src/redis-server
-
-- name: create redis install directory
-  file:
-    path: "{{ redis_install_dir }}"
-    state: directory
-    mode: 0755
-
-- name: create /etc/redis
-  file:
-    path: /etc/redis
-    state: directory
-    mode: 0755
 
 - name: check if redis user exists (ignore errors)
   command: id {{ redis_user }}
@@ -50,11 +38,29 @@
     system: yes
   when: user_exists is failed
 
+- name: create redis install directory
+  file:
+    path: "{{ redis_install_dir }}"
+    state: directory
+    mode: 0750
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+
+- name: create /etc/redis
+  file:
+    path: /etc/redis
+    state: directory
+    mode: 0750
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+
 - name: create /var/run/redis
   file:
     path: /var/run/redis
     state: directory
+    mode: 0750
     owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
 
 - name: install redis
   shell: umask 0022 && make PREFIX={{ redis_install_dir }} install
