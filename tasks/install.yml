@@ -79,4 +79,6 @@
     path: "{{ redis_install_dir }}/bin/{{ item }}"
     link: "/usr/bin/{{ item }}"
   with_items: "{{ redis_binaries.stdout_lines }}"
-  when: redis_binaries is succeeded
+  when:
+    - redis_binaries is succeeded
+    - not ansible_check_mode
