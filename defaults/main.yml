@@ -22,6 +22,8 @@ redis_nofile_limit: 16384
 redis_oom_score_adjust: 0
 
 ## Role options
+# install redis server
+redis_server: true
 # Configure Redis as a service
 # This creates the init scripts for Redis and ensures the process is running
 # Also applies for Redis Sentinel
