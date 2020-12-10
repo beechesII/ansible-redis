@@ -124,14 +124,6 @@
     mode: 0640
   notify: "restart sentinel {{ redis_sentinel_port }}"
 
-- name: create sentinel live config script
-  template:
-    src: redis_sentinel_config.sh.j2
-    dest: /etc/redis/sentinel_{{ redis_sentinel_port }}_config.sh
-    owner: "{{ redis_user }}"
-    mode: 0750
-  notify: "reconfigure sentinel {{ redis_sentinel_port }} monitors"
-
 - name: add sentinel init config file
   template:
     dest: /etc/sysconfig/sentinel_{{ redis_sentinel_port }}
